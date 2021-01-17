@@ -25,3 +25,9 @@ export const btnLogin = derived(isLogin,$islogin=>$islogin===false?login:exit)
 export const storageLogin = derived(isLogin,$islogin=>$islogin===true?storage:false)
 
 export const authLogin = derived(isLogin,$login=>$login===true?profile().toJSON():false);
+
+export const authName = derived(isLogin,$login=>$login===true?profile().toJSON().name:false);
+
+export const authImage = derived(isLogin,$login=>$login===true?profile().toJSON().image[0].contentUrl:false);
+
+export const authDescription = derived(isLogin,$login=>$login===true?profile().toJSON().description:false);

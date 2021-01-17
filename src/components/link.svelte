@@ -1,0 +1,48 @@
+<script>
+    import {isLogin,router} from "../js/data"
+    import { getContext, createEventDispatcher } from "svelte";
+    import { ROUTER, LOCATION } from "svelte-routing/src/contexts.js";
+    import { navigate } from "svelte-routing/src/history.js";
+    import { startsWith, resolve, shouldNavigate } from "svelte-routing/src/utils.js";
+  
+    export let to = "#";
+    export let replace = false;
+    export let state = {};
+    export let getProps = () => ({});
+    export let auth = false;
+    export let value;
+  
+    const { base } = getContext(ROUTER);
+    const location = getContext(LOCATION);
+    const dispatch = createEventDispatcher();
+  
+    let href, isPartiallyCurrent, isCurrent, props;
+    $: href = to === "/" ? $base.uri : resolve(to, $base.uri);
+    $: isPartiallyCurrent = startsWith($location.pathname, href);
+    $: isCurrent = href === $location.pathname;
+    $: ariaCurrent = isCurrent ? "page" : undefined;
+    $: props = getProps({
+      location: $location,
+      href,
+      isPartiallyCurrent,
+      isCurrent
+    });
+  
+    function onClick(event) {
+      dispatch("click", event);
+      if (shouldNavigate(event)) {
+        const shouldReplace = $location.pathname === href || replace;
+        navigate(href, { state, replace: shouldReplace });
+      }
+    }
+</script>
+
+{#if auth==$isLogin}
+    <a href="{href}" aria-current="{ariaCurrent}" on:click|preventDefault="{onClick}" {...props} {...$$restProps}>
+        <slot>{value}</slot>
+    </a>
+{:else}
+    <a  href="{href}" aria-current="{ariaCurrent}" on:click|preventDefault="{onClick}" {...props} {...$$restProps}>
+        <slot>{value}</slot>
+    </a>
+{/if}

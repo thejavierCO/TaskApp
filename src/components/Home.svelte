@@ -1,10 +1,9 @@
 <script>
-    export let auth;
-    let {name,image:{0:{contentUrl:avatar}},description} = auth;
+    import {isLogin,authName,authImage,authDescription} from "../js/data";
 </script>
 <h1>Home</h1>
-{#if auth}
-    <div>{name}</div>
-    <img src={avatar} alt={name}>
-    <div>{description}</div>
+{#if $isLogin}
+    <div>{$authName}</div>
+    <img src={$authImage} alt="name">
+    <div>{$authDescription}</div>
 {/if}
