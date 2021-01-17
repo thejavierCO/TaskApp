@@ -1,5 +1,5 @@
 <script>
-    import {isLogin,router} from "../js/data"
+    import {isLogin,router} from "../js/data";
     import { getContext, createEventDispatcher } from "svelte";
     import { ROUTER, LOCATION } from "svelte-routing/src/contexts.js";
     import { navigate } from "svelte-routing/src/history.js";

@@ -1,6 +1,6 @@
-import {isLogin} from "./data"
-import {showConnect,AppConfig,UserSession} from "@stacks/connect";
-import {Profile} from "@stacks/profile";
+import { isLogin } from "./data"
+import { showConnect , AppConfig , UserSession } from "@stacks/connect";
+import { Profile } from "@stacks/profile";
 import { Storage } from '@stacks/storage';
 
 export const appConfig = new AppConfig(["store_write","publish_data"]);
