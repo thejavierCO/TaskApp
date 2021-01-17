@@ -21,4 +21,6 @@ export const exit = ()=>{userSession.signUserOut();isLogin.end()};
 
 export const isSingIn = ()=>userSession.isUserSignedIn();
 
-export const profile = ()=>new Profile(userSession.loadUserData().profile);
+export const user = ()=>userSession.loadUserData();
+
+export const profile = ()=>new Profile(user().profile);
