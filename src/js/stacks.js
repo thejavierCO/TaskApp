@@ -24,3 +24,7 @@ export const isSingIn = ()=>userSession.isUserSignedIn();
 export const user = ()=>userSession.loadUserData();
 
 export const profile = ()=>new Profile(user().profile);
+
+window.clearStorage = ()=>{
+    storage.listFiles((name)=>{storage.deleteFile(name);return true});
+}

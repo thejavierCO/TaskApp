@@ -37,22 +37,20 @@ export const authStorage = derived(isLogin,$islogin=>$islogin===true?storage:fal
 const createFiles = _=>{
     const {subscribe} = readable([],(set)=>{
         let files = [];
-        storage.listFiles(name=>{files.push(name);return true})
-        .then(e=>set(files));
+        storage.listFiles(name=>{files.push(name);return true}).then(e=>set(files));
     })
     return {subscribe}
 }
 
 export const Files = createFiles();
 
-const createStorage = _=>{
-    const {subscribe,update} = writable([],set=>{
-        let end = Files.subscribe(e=>set(e))
-        return ()=>end();
-    });
-    subscribe(e=>{
+export const nameFile = "Task.json"
 
-    })
+const createStorage = _=>{
+    const {subscribe,update} = writable([],(set)=>storage.getFile(nameFile,{decrypt:false})
+    .then(e=>set(JSON.parse(e)))
+    .catch(e=>{storage.putFile(nameFile,JSON.stringify([]))}));
+    subscribe(e=>storage.putFile(nameFile,JSON.stringify(e),{encrypt:false}))
     return {
         subscribe,
         add:(data)=>update(old=>{
