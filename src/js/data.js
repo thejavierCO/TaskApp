@@ -37,7 +37,8 @@ export const authStorage = derived(isLogin,$islogin=>$islogin===true?storage:fal
 const createFiles = _=>{
     const {subscribe} = readable([],(set)=>{
         let files = [];
-        storage.listFiles(name=>{files.push(name);return true}).then(e=>set(files));
+        storage.listFiles(name=>{files.push(name);return true})
+        .then(e=>set(files));
     })
     return {subscribe}
 }
@@ -45,7 +46,13 @@ const createFiles = _=>{
 export const Files = createFiles();
 
 const createStorage = _=>{
-    const {subscribe,update} = writable([]);
+    const {subscribe,update} = writable([],set=>{
+        let end = Files.subscribe(e=>set(e))
+        return ()=>end();
+    });
+    subscribe(e=>{
+
+    })
     return {
         subscribe,
         add:(data)=>update(old=>{
