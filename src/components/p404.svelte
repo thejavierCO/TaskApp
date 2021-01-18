@@ -1,1 +1,1 @@
-<h1>404</h1>
+<h1 class="text-center text-5xl">404</h1>

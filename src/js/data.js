@@ -46,27 +46,70 @@ export const Files = createFiles();
 
 export const nameFile = "Task.json"
 
+const statusPublic = (a)=>{
+    let {subscribe,set} = writable(false);
+    return {
+        subscribe,
+        send:()=>set(true),
+        clear:()=>set(false)
+    }
+}
+
+export const statusSend = statusPublic(false)
+
 const createStorage = _=>{
-    const {subscribe,update} = writable([],(set)=>storage.getFile(nameFile,{decrypt:false})
-    .then(e=>set(JSON.parse(e)))
-    .catch(e=>{storage.putFile(nameFile,JSON.stringify([]))}));
-    subscribe(e=>storage.putFile(nameFile,JSON.stringify(e),{encrypt:false}))
+    const {subscribe,update} = writable([],(set)=>{
+        storage.getFile(nameFile,{decrypt:false})
+        .then(e=>set(JSON.parse(e)))
+        .catch(e=>storage.putFile(nameFile,JSON.stringify([]),{encrypt:false}))
+    });
+    
     return {
         subscribe,
         add:(data)=>update(old=>{
             old.push([data,v4()]);
+            if(old.length!==0){
+                if(!get(statusSend)){
+                    statusSend.send();
+                    storage.putFile(nameFile,JSON.stringify(old),{encrypt:false})
+                    .then(e=>statusSend.clear())
+                    .catch(e=>alert("error "+e.message))
+                }
+            }
             return old;
         }),
-        del:(id)=>update(old=>old.filter(({1:taskid})=>taskid!==id)),
-        edit:(id,data)=>update(old=>old.map(e=>{
-            let {1:idT} = e;
-            if(idT===id){
-                let {title,descripcion} = data;
-                e[0].title = title;
-                e[0].descripcion = descripcion
+        del:(id)=>update(old=>{
+            let data = old.filter(({1:taskid})=>taskid!==id)
+            if(old.length!==0){
+                if(!get(statusSend)){
+                    statusSend.send();
+                    storage.putFile(nameFile,JSON.stringify(data),{encrypt:false})
+                    .then(e=>statusSend.clear())
+                    .catch(e=>alert("error "+e.message))
+                }
             }
-            return e;
-        }))
+            return data;
+        }),
+        edit:(id,data)=>update(old=>{
+            let editData = old.map(e=>{
+                let {1:idT} = e;
+                if(idT===id){
+                    let {title,descripcion} = data;
+                    e[0].title = title;
+                    e[0].descripcion = descripcion
+                }
+                return e;
+            })
+            if(old.length!==0){
+                if(!get(statusSend)){
+                    statusSend.send();
+                    storage.putFile(nameFile,JSON.stringify(editData),{encrypt:false})
+                    .then(e=>statusSend.clear())
+                    .catch(e=>alert("error "+e.message))
+                }
+            }
+            return editData;
+        })
     }
 }
 
