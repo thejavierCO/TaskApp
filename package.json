@@ -15,7 +15,7 @@
     "webpack-dev-server": "^3.11.1"
   },
   "scripts": {
-    "test":"echo test",
+    "test": "echo test",
     "build": "cross-env NODE_ENV=production webpack",
     "start": "webpack-dev-server --content-base public"
   },
