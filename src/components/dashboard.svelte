@@ -1,47 +1,26 @@
 <script>
-    import {auth,Tasks,statusSend} from "../js/data";
-    let add = ({target})=>{
-        let title = target.querySelector("[title]").value;
-        let descripcion = target.querySelector("[descripcion]").value;
-        Tasks.add({title,descripcion})
-    }
-    let del = (idTask)=>Tasks.del(idTask);
-    let edit = ({target})=>{
-        let title = target.querySelector("[title]").value;
-        let descripcion = target.querySelector("[descripcion]").value;
-        let id = target.querySelector("[id]").value;
-        Tasks.edit(id,{title,descripcion})
+    export let storage;
+    export let auth;
+    const file = ({target})=>{
+        const File = new FileReader();
+        let test = target.querySelector("[file]").files[0];
+
+        File.onload = (a)=>{
+            storage.putFile(test.name,File.result,{encrypt:false,contentType:test.type})
+            .then(e=>console.log(e))
+            .catch(e=>console.log(e))
+        }
+
+        File.onprogress = (a)=>{
+            console.log(a,auth)
+        }
+
+        File.readAsArrayBuffer(test);
     }
 </script>
 
-<h1>Dashboard {$auth.username}</h1>
-
-{#if !$statusSend}
-
-<form on:submit|preventDefault={add}>
-    <input type="text"  class=" border border-black p-2" placeholder="title" title>
-    <input type="text"  class=" border border-black p-2" placeholder="description" descripcion>
-    <input type="submit"class=" border border-black p-2" value="Enviar">
-</form>
-<form on:submit|preventDefault={edit} id="editTask">
-    <input type="text"  class=" border border-black p-2" placeholder="title" title>
-    <input type="text"  class=" border border-black p-2" placeholder="description" descripcion>
-    <input type="text"  class=" border border-black p-2" placeholder="id" id>
-    <input type="submit"class=" border border-black p-2" value="Enviar">
+<form on:submit|preventDefault={file}>
+    <input type="file" file/>
+    <input type="submit" value="Enviar">
 </form>
 
-{:else}
-<h1 class="animate-pulse text-5xl text-center p-23">please await...</h1>
-{/if}
-<div class="whitespace-pre-line flex flex-cols flex-wrap">
-    {#each $Tasks as [{title,descripcion},id]}
-        <div id={id} class="border border-black rounded-sm p-2 m-1 flex-grow  overflow-auto">
-            <div>title: {title||"untitle"}</div>
-            <div>description: {descripcion||"undescription"}</div>
-            {#if !$statusSend}
-                <button class="border border-black p-2" on:click={()=>del(id)}>Delete</button>
-                <button class="border border-black p-2" on:click={()=>{document.querySelector("#editTask").querySelector("[id]").value = id}}>Edit</button>
-            {/if}
-        </div>
-    {/each}
-</div>
