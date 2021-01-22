@@ -1,6 +1,5 @@
 <script>
     export let storage;
-    export let auth;
     const file = ({target})=>{
         const File = new FileReader();
         let test = target.querySelector("[file]").files[0];
@@ -12,7 +11,7 @@
         }
 
         File.onprogress = (a)=>{
-            console.log(a,auth)
+            console.log(a.loaded*100/a.total)
         }
 
         File.readAsArrayBuffer(test);
