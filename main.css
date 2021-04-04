@@ -1,0 +1,25 @@
+/* :root{
+    --bg:rgba(0,0,0,0.1);
+}
+
+body{
+    background:var(--bg);
+    color:#fff;
+}
+input[type="text"]{
+    color:#fff;
+}
+main{
+    background: rgba(0,0,0,0.1);
+}
+
+input[type="submit"]{
+    border:1px solid #fff;
+    color:#fff;
+}
+
+input[type="text"]{
+    border:1px solid #fff;
+    color:#fff;
+} */
+.vh-full.svelte-16t6068{height:100vh}
